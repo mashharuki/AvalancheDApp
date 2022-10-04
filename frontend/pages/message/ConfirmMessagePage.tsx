@@ -2,37 +2,42 @@ import { BigNumber } from "ethers";
 import MessageCard from "../../components/card/MessageCard";
 import Layout from "../../components/layout/Layout";
 import { Message } from "../../hooks/useMessengerContract";
+import RequireWallet from "../../components/layout/RequireWallet";
+import { useWallet } from "../../hooks/useWallet";
+import { useMessengerContract } from "../../hooks/useMessengerContract";
 
 /**
  * ConfirmMessagePage Component
  */
 function ConfirmMessagePage() {
-
-    // test data
-    const message: Message = {
-        depositInWei: BigNumber.from("1000000000000000000"),
-        timestamp: new Date(1),
-        text: "message",
-        isPending: true,
-        sender: "0x~",
-        receiver: "0x~",
-    };
-
-    let ownMessages: Message[] = [message, message];
+    const { currentAccount, connectWallet } = useWallet();
+    const { ownMessages, processing, acceptMessage, denyMessage } = useMessengerContract({
+        currentAccount: currentAccount,
+    });
 
     return (
         <Layout>
-            {ownMessages.map((message, index) => {
-                return (
-                    <div key={index}>
-                        <MessageCard
-                            message={message}
-                            onClickAccept={() => {}}
-                            onClickDeny={() => {}}
-                        />
-                    </div>
-                );
-            })}
+            <RequireWallet
+                currentAccount={currentAccount}
+                connectWallet={connectWallet}
+            >
+                {processing && <div>processing...</div>}
+                {ownMessages.map((message, index) => {
+                    return (
+                        <div key={index}>
+                            <MessageCard
+                                message={message}
+                                onClickAccept={() => {
+                                    acceptMessage(BigNumber.from(index));
+                                }}
+                                onClickDeny={() => {
+                                    denyMessage(BigNumber.from(index));
+                                }}
+                            />
+                        </div>
+                    );
+                })}
+            </RequireWallet>
         </Layout>
     );
 }

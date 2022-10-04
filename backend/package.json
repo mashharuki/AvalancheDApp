@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:fuij": "npx hardhat run scripts/deploy.ts --network fuji && cp -r ./typechain-types frontend/ && cp ./artifacts/contracts/Messenger.sol/Messenger.json ../frontend/utils/"
   },
   "keywords": [],
   "author": "",
