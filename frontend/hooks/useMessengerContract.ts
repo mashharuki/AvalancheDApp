@@ -25,9 +25,12 @@ type PropsSendMessage = {
 type ReturnUseMessengerContract = {
   processing: boolean;
   ownMessages: Message[];
+  owner: string | undefined;
+  numOfPendingLimits: BigNumber | undefined;
   sendMessage: (props: PropsSendMessage) => void;
   acceptMessage: (index: BigNumber) => void;
   denyMessage: (index: BigNumber) => void;
+  changeNumOfPendingLimits: (limits: BigNumber) => void;
 };
 
 type PropsUseMessengerContract = {
@@ -45,6 +48,8 @@ export const useMessengerContract = ({
   const [processing, setProcessing] = useState<boolean>(false);
   const [messengerContract, setMessengerContract] = useState<MessengerType>();
   const [ownMessages, setOwnMessages] = useState<Message[]>([]);
+  const [owner, setOwner] = useState<string>();
+  const [numOfPendingLimits, setNumOfPendingLimits] = useState<BigNumber>();
 
   // get ethereum object
   const ethereum = getEthereum();
@@ -182,9 +187,67 @@ export const useMessengerContract = ({
     }
   }
 
+  /**
+   * get owner address function
+   */
+  async function getOwner() {
+    if (!messengerContract) return;
+    try {
+      console.log("call getter of owner");
+      // call owner() function
+      const owner = await messengerContract.owner();
+      // set
+      setOwner(owner.toLocaleLowerCase());
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /**
+   * getNumOfPendingLimits function 
+   */
+  async function getNumOfPendingLimits() {
+    if (!messengerContract) return;
+    try {
+      console.log("call getter of numOfPendingLimits");
+      // call numOfPendingLimits function
+      const limits = await messengerContract.numOfPendingLimits();
+      // set 
+      setNumOfPendingLimits(limits);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /**
+   * changeNumOfPendingLimits function
+   * @param limits new limit 
+   * @returns 
+   */
+  async function changeNumOfPendingLimits(limits: BigNumber) {
+    if (!messengerContract) return;
+    try {
+      console.log("call changeNumOfPendingLimits with [%d]", limits.toNumber());
+      // call changeNumOfPendingLimits function
+      const txn = await messengerContract.changeNumOfPendingLimits(limits, {
+        gasLimit: 300000,
+      });
+
+      console.log("Processing...", txn.hash);
+      setProcessing(true);
+      await txn.wait();
+      console.log("Done -- ", txn.hash);
+      setProcessing(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getMessengerContract();
     getOwnMessages();
+    getOwner();
+    getNumOfPendingLimits();
   }, [currentAccount, ethereum]);
 
   useEffect(() => {
@@ -229,28 +292,39 @@ export const useMessengerContract = ({
         });
       }
     };
+
+    const onNumOfPendingLimitsChanged = (limitsChanged: BigNumber) => {
+      console.log(
+        "NumOfPendingLimitsChanged limits:[%d]",
+        limitsChanged.toNumber()
+      );
+      setNumOfPendingLimits(limitsChanged);
+    };
   
 
     if (messengerContract) {
       messengerContract.on("NewMessage", onNewMessage);
       messengerContract.on("MessageConfirmed", onMessageConfirmed);
+      messengerContract.on("NumOfPendingLimitsChanged", onNumOfPendingLimitsChanged);
     }
 
     return () => {
       if (messengerContract) {
         messengerContract.off("NewMessage", onNewMessage);
         messengerContract.off("MessageConfirmed", onMessageConfirmed);
+        messengerContract.off("NumOfPendingLimitsChanged", onNumOfPendingLimitsChanged);
       }
     };
-
-    
   }, [messengerContract]);
 
   return {
     processing,
     ownMessages,
+    owner,
+    numOfPendingLimits,
     sendMessage,
     acceptMessage,
-    denyMessage
+    denyMessage,
+    changeNumOfPendingLimits,
   };
 }

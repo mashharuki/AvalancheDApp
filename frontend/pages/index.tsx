@@ -4,12 +4,16 @@ import Link from "next/link";
 import Layout from "../components/layout/Layout";
 import RequireWallet from "../components/layout/RequireWallet";
 import { useWallet } from "../hooks/useWallet";
+import { useMessengerContract } from "../hooks/useMessengerContract";
 
 /**
  * Home Component
  */
 const Home: NextPage = () => {
     const { currentAccount, connectWallet } = useWallet();
+    const { owner } = useMessengerContract({
+      currentAccount: currentAccount,
+    });
 
     return (
       <Layout home>
@@ -32,6 +36,14 @@ const Home: NextPage = () => {
                 </Link>
                 <p>Check messages from other accounts</p>
               </div>
+              {owner === currentAccount && (
+                <div className={styles.card}>
+                  <Link href="/OwnerPage">
+                    <h2>owner &rarr;</h2>
+                  </Link>
+                  <p>Owner page</p>
+                </div>
+              )}
             </main>
           </div>
         </RequireWallet>

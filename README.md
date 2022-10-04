@@ -63,4 +63,5 @@ Web アプリケーションがコントラクトと通信するために必要�
 
 ### トランザクションの一例
 
-[0x8479ccc27ea6cb8b82019674ec483598f771e76404bf4fbacb42ff4161910863](https://testnet.avascan.info/blockchain/c/tx/0x8479ccc27ea6cb8b82019674ec483598f771e76404bf4fbacb42ff4161910863)
+1. [0x8479ccc27ea6cb8b82019674ec483598f771e76404bf4fbacb42ff4161910863](https://testnet.avascan.info/blockchain/c/tx/0x8479ccc27ea6cb8b82019674ec483598f771e76404bf4fbacb42ff4161910863)
+2. [0xa01cc0b643e990fec2a371ac1d5f6e7a7313e95053eb97cecf382370a25adf20](https://testnet.avascan.info/blockchain/c/tx/0xa01cc0b643e990fec2a371ac1d5f6e7a7313e95053eb97cecf382370a25adf20)
