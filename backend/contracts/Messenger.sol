@@ -2,11 +2,14 @@
 pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
+import "./Ownable.sol";
 
 /**
  * Messenger Contract
  */
-contract Messenger {
+contract Messenger is Ownable {
+
+    uint256 public numOfPendingLimits;
 
     // Struct of Message
     struct Message {
@@ -19,6 +22,7 @@ contract Messenger {
     }
 
     mapping(address => Message[]) private messagesAtAddress;
+    mapping(address => uint256) private numOfPendingAtAddress;
 
     // event
     event NewMessage(
@@ -29,17 +33,28 @@ contract Messenger {
         string text,
         bool isPending
     );
-
     event MessageConfirmed(address receiver, uint256 index);
+    event NumOfPendingLimitsChanged(uint256 limits);
 
-    constructor() payable {
+    constructor(uint256 _numOfPendingLimits) payable {
         console.log("Here is my first smart contract!");
+        ownable();
+        numOfPendingLimits = _numOfPendingLimits;
     }
 
     /**
      * post function
      */
     function post(string memory _text, address payable _receiver) public payable {
+
+        // check
+        require(
+            numOfPendingAtAddress[_receiver] < numOfPendingLimits,
+            "The receiver has reached the number of pending limits"
+        );
+
+        // increment
+        numOfPendingAtAddress[_receiver] += 1;
         
         console.log(
             "%s posts text:[%s] token:[%d]",
@@ -118,5 +133,13 @@ contract Messenger {
      */
     function getOwnMessages() public view returns (Message[] memory) {
         return messagesAtAddress[msg.sender];
+    }
+
+    /**
+     * change Num of pending limits function
+     */
+    function changeNumOfPendingLimits(uint256 _limits) external onlyOwner {
+        numOfPendingLimits = _limits;
+        emit NumOfPendingLimitsChanged(numOfPendingLimits);
     }
 }

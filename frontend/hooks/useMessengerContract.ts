@@ -4,7 +4,7 @@ import abi from "../utils/Messenger.json";
 import { getEthereum } from "../utils/ethereum";
 import { Messenger as MessengerType } from "../typechain-types";
 
-const contractAddress = "0x67ADc29278d87D87b212C59fDffd2749fe7418c4";
+const contractAddress = "0xfe03B6a6B4B095248F06Ed9528e913995ED58f97";
 const contractABI = abi.abi;
 
 export type Message = {
