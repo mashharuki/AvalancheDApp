@@ -4,7 +4,7 @@ import abi from "../utils/Messenger.json";
 import { getEthereum } from "../utils/ethereum";
 import { Messenger as MessengerType } from "../typechain-types";
 
-const contractAddress = "0xfe03B6a6B4B095248F06Ed9528e913995ED58f97";
+const contractAddress = "0xfFC2535688c5C053CF6E4C1B9452Fa14c092fe45";
 const contractABI = abi.abi;
 
 export type Message = {
@@ -60,7 +60,7 @@ export const useMessengerContract = ({
   function getMessengerContract() {
     try {
       if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
+        const provider = new ethers.providers.Web3Provider(ethereum as any);
         const signer = provider.getSigner();
         const MessengerContract = new ethers.Contract(
           contractAddress,

@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Messenger } from "./Messenger";
+export type { Ownable } from "./Ownable";
 export * as factories from "./factories";
 export { Messenger__factory } from "./factories/Messenger__factory";
+export { Ownable__factory } from "./factories/Ownable__factory";
