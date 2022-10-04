@@ -23,7 +23,7 @@ const Home: NextPage = () => {
         >
           <div className={styles.container}>
             <main className={styles.main}>
-              <h1 className={styles.title}>Welcome to Messenger 📫</h1>
+              <h1 className={styles.title}>Messenger Dapp📫</h1>
               <div className={styles.card}>
                 <Link href="/message/SendMessagePage">
                   <h2>send &rarr;</h2>
