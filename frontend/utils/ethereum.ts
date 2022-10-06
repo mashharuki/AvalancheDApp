@@ -6,6 +6,9 @@ declare global {
     }
 }
 
+/**
+ * getEthereum function
+ */
 export const getEthereum = (): MetaMaskInpageProvider | null => {
     if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
         const { ethereum } = window;
